@@ -7,18 +7,16 @@ double factorial(int k){
         return k*factorial(k-1);
     }
 }
-double result(int n, int m){
-    return factorial(m)/factorial(m-n)*factorial(n);
+double result(int m, int n){  //이거 넣는 거 n, m 순서로 넣으면 안된다.
+    return factorial(m)/(factorial(m-n)*factorial(n));
 }
 int main(void){
-    int num, n, m, ans;
+    int num, n, m;
     scanf("%d",&num);
     for(int i=0;i<num;i++){
         scanf("%d %d",&n ,&m);
+        printf("%.lf\n",result(m,n)); //이거 넣는 거 n, m 순서로 넣으면 안된다.
+        //%f는 float형의 실수로 입력. %lf는 double형의 실수로 입력
     }
-    for(int i=0;i<num;i++){
-        printf("%.lf\n",result(n,m));
-    }
-
     return 0;
 }
