@@ -1,0 +1,218 @@
+-- Customer 테이블 생성
+CREATE TABLE Customer (
+    customer_id VARCHAR(3) PRIMARY KEY,
+    customer_name VARCHAR(100),
+    customer_street VARCHAR(100),
+    customer_city VARCHAR(100)
+);
+c01   김지은  강남구 도곡동 949       서울특별시
+c02   이지훈  송파구 가락동 915       서울특별시   
+c03   김태호  분당구 운중동 322-12    성남시  
+c04   이종현  분당구 대장동 603-2     성남시
+c05   김이현  광진구 광장동 530-40    서울특별시
+c06   황지원  성동구 성수동2가 250-34 서울특별시
+c07   이수진  서초구 내곡동 20-22     서울특별시
+c08   양윤모  동작구 사당동 219-6     서울특별시
+
+-- Loan 테이블 생성
+CREATE TABLE Loan (
+    loan_number VARCHAR(20) PRIMARY KEY,
+    amount INT
+);
+ln01    10(1000만원) --KEB하나은행 서울숲지점
+ln02    10(1000만원) --KEB하나은행 서울숲지점
+ln03    30(3000만원) --국민은행 부산법조타운지점
+ln04    200(2억)    --부산은행 마린제니스지점
+ln05    20(2000만원) --하나은행 울산지점
+ln06    50(5000만원) --신한은행 서대전지점
+ln07    100(1억)    --우리은행 서울대입구역지점 
+ln08    10(1000만원) --신한은행 남대문지점
+ln09    10(1000만원) --KEB하나은행 서울숲지점
+
+-- Account 테이블 생성
+-- Balance는 계좌의 잔액
+CREATE TABLE Account (
+    account_number VARCHAR(20) PRIMARY KEY,
+    balance INT
+);
+a01     1000(10억)
+a02     100(1억)
+a03     10(1000만원)            
+a04     20(2000만원)
+a05     30(3000만원)
+a06     50(5000만원)    
+a07     200(2억)
+a08     80(8000만원)
+
+('a01', 1000),
+('a02', 100),
+('a03', 10),
+('a04', 20),
+('a05', 30),
+('a06', 50),
+('a07', 200),
+('a08', 80);
+
+-- Employee 테이블 생성
+-- Start_date: 입사 날짜
+-- employee_id가 VARCHAR(3)이 되어야 하는게 아닌가...
+CREATE TABLE Employee (
+    employee_id VARCHAR(4) PRIMARY KEY,
+    employee_name VARCHAR(100),
+    telephone_number VARCHAR(11),
+    employment_length INT,
+    start_date DATE
+);
+e01   유재민  9850-4920     1    2022-09-18        
+e02   강수지  492-04933     11   2012-04-24
+e03   박은지  9261-9302     16   2007-12-29
+e04   김가은  9973-2834     9    2014-09-15
+e05   김세리  942-5903      14   2009-12-07
+e06   박한국  205-2036      5    2018-04-18
+e07   이은수  892-0947      7    2016-03-21
+e08   최여빈  558-4785      10   2013-08-04
+e09   김진수  529-3924      1    2022-03-04
+e10   김예빈  294-4890      7    2016-04-08
+
+-- Employee_Dependent 테이블 생성
+CREATE TABLE Employee_Dependent (
+    employee_id VARCHAR(3),
+    dependent_name VARCHAR(100),
+    PRIMARY KEY (employee_id, dependent_name),
+    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
+);
+e01     유철수
+e01     이영희
+e02     박민수
+e03     최유리
+e04     김대익
+e04     나유진
+e08     최건우     
+e08     최수연
+e08     박지영
+e08     김다희
+
+-- Branch 테이블 생성
+CREATE TABLE Branch (
+    branch_name VARCHAR(100) PRIMARY KEY,
+    branch_city VARCHAR(100),
+    assets INT
+);
+국민은행 부산법조타운지점           부산광역시    10(1000만원)  -
+부산은행 마린제니스지점         부산광역시   20(2000만원)  -
+하나은행 울산지점           울산광역시    30(3000만원) -
+하나은행 수완지점            광주광역시   100(10000만원-1억) -
+신한은행 서대전지점             대전광역시   200(20000만원-2억) -
+우리은행 서울대입구역지점         서울특별시   500(50000만원-5억)
+KEB하나은행 서울숲지점           서울특별시    40(4000만원) -
+신한은행 남대문지점             서울특별시   300(30000만원-3억)  -
+
+-- Payment 테이블 생성
+-- payment_number: 대출 계좌의 대출금을 갚을 때 상환 순서를 기록함
+CREATE TABLE Payment (
+    loan_number VARCHAR(20),
+    payment_number INT,
+    payment_amount INT,
+    payment_date DATE,
+    PRIMARY KEY ( loan_number, payment_number),
+    FOREIGN KEY (loan_number) REFERENCES Loan(loan_number)
+);
+ln02    1     10(1000만원)  2023-11-04 
+ln02    2     10(1000만원)  2023-12-05
+ln03    1     30(3000만원)  2023-11-04
+ln04    1     40(4000만원)  2020-08-23
+ln05    1     30(3000만원)  2021-05-03
+ln07    1     40(4000만원)  2022-02-23
+ln07    2     20(2000만원)  2022-05-01
+ln07    3     30(3000만원)  2023-11-10
+
+-- Borrower 테이블 생성
+-- 대출 안한 고객: c01, c03, c05, c08
+CREATE TABLE Borrower (
+    customer_id VARCHAR(3),
+    loan_number VARCHAR(20),
+    PRIMARY KEY (customer_id, loan_number),
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+    FOREIGN KEY (loan_number) REFERENCES Loan(loan_number)
+);
+c02     ln01
+c02     ln02
+c02     ln09
+c04     ln04
+c04     ln05
+c04     ln06
+c06     ln06
+c07     ln07
+
+-- Depositor 테이블 생성
+CREATE TABLE Depositor (
+    customer_id VARCHAR(3),
+    account_number VARCHAR(20),
+    PRIMARY KEY (customer_id, account_number),
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+    FOREIGN KEY (account_number) REFERENCES Account(account_number)
+);
+
+c01     a02
+c01     a03
+c02     a01
+c03     a04
+c04     a05
+c07     a06
+c07     a07
+c08     a08
+
+-- Manager_Worker 테이블 생성
+-- e08은 관리자가 없다.
+CREATE TABLE Manager_Worker (
+    employee_manager VARCHAR(20),
+    employee_worker VARCHAR(20),
+    PRIMARY KEY (employee_manager, employee_worker),
+    FOREIGN KEY (employee_manager) REFERENCES Employee(employee_id),
+    FOREIGN KEY (employee_worker) REFERENCES Employee(employee_id)
+);
+e01     e02
+e01     e03
+e04     e05
+e04     e06
+e04     e07
+e04     e09
+e04     e10
+
+
+-- Loan_Branch 테이블 생성
+-- 하나은행 수완지점 대출 안함
+CREATE TABLE Loan_Branch (
+    loan_number VARCHAR(20),
+    branch_name VARCHAR(100),
+    PRIMARY KEY (loan_number, branch_name),
+    FOREIGN KEY (loan_number) REFERENCES Loan(loan_number),
+    FOREIGN KEY (branch_name) REFERENCES Branch(branch_name)
+);
+ln01    KEB하나은행 서울숲지점  
+ln02    KEB하나은행 서울숲지점
+ln03    국민은행 부산법조타운지점
+ln04    부산은행 마린제니스지점
+ln05    하나은행 울산지점
+ln06    신한은행 서대전지점
+ln07    우리은행 서울대입구역지점
+ln08    신한은행 남대문지점 
+ln09    KEB하나은행 서울숲지점
+
+-- Customer_Banker 테이블 생성
+CREATE TABLE Customer_Banker (
+    customer_id VARCHAR(3),
+    employee_id VARCHAR(3),
+    PRIMARY KEY (customer_id, employee_id),
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
+);
+c01     e02
+c02     e02
+c03     e02
+c04     e05
+c05     e06
+c06     e06
+c07     e09  
+
+
